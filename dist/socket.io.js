@@ -1,4 +1,4 @@
-/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.9.16-patch1, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
@@ -25,7 +25,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
    * @api public
    */
 
-  io.version = '0.9.16';
+  io.version = '0.9.16-patch1';
 
   /**
    * Protocol implemented.
@@ -328,7 +328,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
       if (additional.hasOwnProperty(prop) && util.indexOf(seen, prop) < 0) {
         if (typeof target[prop] !== 'object' || !depth) {
           target[prop] = additional[prop];
-          seen.push(additional[prop]);
+          seen.push(prop);
         } else {
           util.merge(target[prop], additional[prop], depth - 1, seen);
         }
@@ -2030,7 +2030,7 @@ var io = ('undefined' === typeof module ? {} : module.exports);
         return self.reconnectionTimer = setTimeout(maybeReconnect, 1000);
       }
 
-      if (self.reconnectionAttempts++ >= maxAttempts) {
+      if (maxAttempts >= 0 && self.reconnectionAttempts++ >= maxAttempts) {
         if (!self.redoTransports) {
           self.on('connect_failed', maybeReconnect);
           self.options['try multiple transports'] = true;
@@ -2038,13 +2038,17 @@ var io = ('undefined' === typeof module ? {} : module.exports);
           self.transport = self.getTransport();
           self.redoTransports = true;
           self.connect();
+          self.publish('reconnecting', self.reconnectionDelay, self.reconnectionAttempts);
+          self.reconnectionTimer = setTimeout(maybeReconnect, self.reconnectionDelay);
         } else {
           self.publish('reconnect_failed');
           reset();
         }
       } else {
-        if (self.reconnectionDelay < limit) {
+        if (self.reconnectionDelay * 2 <= limit) {
           self.reconnectionDelay *= 2; // exponential back off
+        } else {
+          self.reconnectionDelay = limit;
         }
 
         self.connect();
@@ -3867,7 +3871,4 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   , this
 );
 
-if (typeof define === "function" && define.amd) {
-  define([], function () { return io; });
-}
 })();
