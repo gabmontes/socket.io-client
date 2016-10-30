@@ -18,18 +18,18 @@
       , "url": "https://github.com/LearnBoost/socket.io-client.git"
     }
   , "dependencies": {
-        "uglify-js": "1.2.5"
-      , "ws": "0.4.x"
-      , "xmlhttprequest": "1.4.2"
-      , "active-x-obfuscator": "0.0.1"
+        "uglify-js": "2.7.4"
+      , "ws": "~1.1.1"
+      , "xmlhttprequest": "1.8.0"
+      , "active-x-obfuscator": "0.0.2"
     }
   , "devDependencies": {
         "expresso": "*"
-      , "express": "2.5.x"
+      , "express": "~4.14.0"
       , "jade": "*"
       , "stylus": "*"
-      , "socket.io": "0.9.11"
-      , "socket.io-client": "0.9.11"
+      , "socket.io": "1.5.1"
+      , "socket.io-client": "1.5.1"
       , "should": "*"
     }
   , "engines": { "node": ">= 0.4.0" }
